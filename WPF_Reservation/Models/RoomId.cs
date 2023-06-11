@@ -19,7 +19,7 @@ namespace WPF_Reservation.Models
 
         public override string ToString()
         {
-            return $"Floor Num is {FloorNumber}/ Room Num is {RoomNumber}";
+            return $"{FloorNumber} / {RoomNumber}";
         }
 
         public override bool Equals(object? obj)

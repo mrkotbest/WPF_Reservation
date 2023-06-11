@@ -10,17 +10,17 @@ namespace WPF_Reservation.Models
     {
         public RoomId RoomId { get; }
         public string Username { get; }
-        public DateTime StartTime { get; }
-        public DateTime EndTime { get; }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
 
-        public TimeSpan Length => EndTime.Subtract(StartTime); 
+        public TimeSpan Length => EndDate.Subtract(StartDate); 
 
-        public Reservation(RoomId roomId, string username, DateTime startTime, DateTime endTime)
+        public Reservation(RoomId roomId, string username, DateTime startDate, DateTime endDate)
         {
             RoomId = roomId;
             Username = username;
-            StartTime = startTime;
-            EndTime = endTime;
+            StartDate = startDate;
+            EndDate = endDate;
         }
 
         public bool Conflicts(Reservation reservation)
@@ -28,7 +28,7 @@ namespace WPF_Reservation.Models
             if (reservation.RoomId != RoomId)
                 return false;
 
-            return reservation.StartTime < EndTime && reservation.EndTime > StartTime; 
+            return reservation.StartDate < EndDate && reservation.EndDate > StartDate; 
         }
     }
 }

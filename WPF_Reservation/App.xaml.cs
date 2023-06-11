@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
+using WPF_Reservation.ViewModels;
+using WPF_Reservation.Views;
 
 namespace WPF_Reservation
 {
@@ -17,7 +19,7 @@ namespace WPF_Reservation
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            Hotel hotel = new Hotel("Only for adults");
+            /*Hotel hotel = new Hotel("Only for adults");
 
             try
             {
@@ -36,7 +38,13 @@ namespace WPF_Reservation
                 throw ex;
             }
 
-            IEnumerable<Reservation> reservations = hotel.GetAllReservations();
+            IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
+
+            MainWindow mainWindow = new MainWindow()
+            {
+                DataContext = new MainViewModel()
+            };
+            mainWindow.Show();
 
             base.OnStartup(e);
         }

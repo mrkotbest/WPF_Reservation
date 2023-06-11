@@ -26,15 +26,13 @@
                 Style="{StaticResource Header}"/>
 
             <Button
+                Command="{Binding MakeReservationCommand}"
+                Content="Make Reservation"
                 Grid.Column="1"
-                Margin="10 0 0 0"
-                Content="Make Reservation"/>
+                Margin="10 0 0 0"/>
         </Grid>
 
-        <ListView Grid.Row="1" Margin="0 25 0 0">
-            <ListViewItem />
-            <ListViewItem />
-            <ListViewItem />
+        <ListView Grid.Row="1" ItemsSource="{Binding Reservations}" Margin="0 25 0 0">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -45,7 +43,7 @@
                     <GridViewColumn Header="Room ID">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock HorizontalAlignment="Center" Text="12"/>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding RoomId}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -53,7 +51,7 @@
                     <GridViewColumn Header="Username">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Padding="0 0 20 0" Text="SingletonSean"/>
+                                <TextBlock Padding="0 0 20 0" Text="{Binding Username}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -61,7 +59,7 @@
                     <GridViewColumn Header="Start Date">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Padding="0 0 20 0" Text="8/20/2021"/>
+                                <TextBlock Padding="0 0 20 0" Text="{Binding StartDate, StringFormat='dd.MM HH:mm'}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -69,13 +67,12 @@
                     <GridViewColumn Header="End Date">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Padding="0 0 20 0" Text="10/5/2021"/>
+                                <TextBlock Padding="0 0 20 0" Text="{Binding EndDate, StringFormat='dd.MM HH:mm'}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        
     </Grid>
 </UserControl>
