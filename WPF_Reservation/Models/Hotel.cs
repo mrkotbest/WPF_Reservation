@@ -10,11 +10,11 @@ namespace WPF_Reservation.Models
     {
         private readonly ReservationBook _reservationBook;
 
-        public string NameHotel { get; }
+        public string Name { get; }
 
         public Hotel(string name)
         {
-            NameHotel = name;
+            Name = name;
             _reservationBook = new ReservationBook();
         }
 
