@@ -22,10 +22,10 @@ namespace WPF_Reservation.Models
         /// Get the reservations for a user.
         /// </summary>
         /// <param name="username">A username of the user.</param>
-        /// <returns>The reservations for the user.</returns>
-        public IEnumerable<Reservation> GetReservationsForUser(string username)
+        /// <returns>All reservations in the reservation book.</returns>
+        public IEnumerable<Reservation> GetAllReservations()
         {
-            return _reservationBook.GetReservationsForUser(username);
+            return _reservationBook.GetAllReservations();
         }
 
         /// <summary>

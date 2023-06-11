@@ -3,10 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF_Reservation"
+        xmlns:local="clr-namespace:WPF_Reservation" 
+        xmlns:views="clr-namespace:WPF_Reservation.Views"
         mc:Ignorable="d"
-        Title="Reservation" Height="450" Width="800">
-    <Grid>
-
+        Title="Reservation"
+        FontSize="14"
+        Height="450"
+        Width="800">
+    <Grid Margin="20 10" MaxWidth="800">
+        <StackPanel Orientation="Horizontal">
+            <views:MakeReservationView />
+            <views:ReservationListingView Margin="30 0 0 0" />
+        </StackPanel>
     </Grid>
 </Window>

@@ -21,7 +21,7 @@ namespace WPF_Reservation
 
             try
             {
-                hotel.MakeReservation(new Reservation(new RoomId(1, 3),
+                hotel.MakeReservation(new Reservation(new RoomId(1, 2),
                     "Gendalf Gray",
                     new DateTime(2000, 1, 1),
                     new DateTime(2000, 1, 2)));
@@ -36,7 +36,7 @@ namespace WPF_Reservation
                 throw ex;
             }
 
-            IEnumerable<Reservation> reservations = hotel.GetReservationsForUser("Gendalf Gray");
+            IEnumerable<Reservation> reservations = hotel.GetAllReservations();
 
             base.OnStartup(e);
         }

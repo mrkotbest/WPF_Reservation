@@ -16,9 +16,9 @@ namespace WPF_Reservation.Models
             _reservations = new List<Reservation>();
         }
 
-        public IEnumerable<Reservation> GetReservationsForUser(string username)
+        public IEnumerable<Reservation> GetAllReservations()
         {
-            return _reservations.Where(u => u.Username == username);
+            return _reservations;
         }
 
         public void AddReservation(Reservation reservation)
