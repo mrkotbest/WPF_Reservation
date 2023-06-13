@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
+using WPF_Reservation.Services;
+using WPF_Reservation.Stores;
 using WPF_Reservation.ViewModels;
 using WPF_Reservation.Views;
 
@@ -18,10 +20,12 @@ namespace WPF_Reservation
     public partial class App : Application
     {
         private readonly Hotel _hotel;
+        private readonly NavigationStore _navigationStore;
 
         public App()
         {
             _hotel = new Hotel("For Adults");
+            _navigationStore = new NavigationStore();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -47,10 +51,21 @@ namespace WPF_Reservation
 
             IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
 
-            MainWindow mainWindow = new() { DataContext = new MainViewModel(_hotel) };
+            _navigationStore.CurrentViewModel = CreateReservationListingViewModel();
+
+            MainWindow mainWindow = new() { DataContext = new MainViewModel(_navigationStore) };
             mainWindow.Show();
 
             base.OnStartup(e);
+        }
+        private MakeReservationViewModel CreateMakeReservationViewModel()
+        {
+            return new MakeReservationViewModel(_hotel, new NavigationService(_navigationStore, CreateReservationListingViewModel));
+        }
+
+        private ReservationListingViewModel CreateReservationListingViewModel()
+        {
+            return new ReservationListingViewModel(_hotel, new NavigationService(_navigationStore, CreateMakeReservationViewModel));
         }
     }
 }

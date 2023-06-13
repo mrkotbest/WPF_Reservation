@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WPF_Reservation.Commands;
 using WPF_Reservation.Models;
+using WPF_Reservation.Services;
+using WPF_Reservation.Stores;
 
 namespace WPF_Reservation.ViewModels
 {
     public class MakeReservationViewModel : ViewModelBase
     {
-		private string _username;
+		private string? _username;
 		public string Username
 		{
 			get => _username;
@@ -70,10 +72,10 @@ namespace WPF_Reservation.ViewModels
 		public ICommand SubmitCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public MakeReservationViewModel(Hotel hotel)
+        public MakeReservationViewModel(Hotel hotel, NavigationService reservationViewNavigationService)
         {
-			SubmitCommand = new MakeReservationCommand(this, hotel);
-			CancelCommand = new CancelMakeReservationCommand();
+			SubmitCommand = new MakeReservationCommand(this, hotel, reservationViewNavigationService);
+			CancelCommand = new NavigationCommand(reservationViewNavigationService);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
+using WPF_Reservation.Services;
 using WPF_Reservation.ViewModels;
 
 namespace WPF_Reservation.Commands
@@ -15,13 +16,18 @@ namespace WPF_Reservation.Commands
     {
         private readonly Hotel _hotel;
         private readonly MakeReservationViewModel _makeReservationViewModel;
+        private readonly NavigationService _reservationViewNavigationService;
 
-        public MakeReservationCommand(MakeReservationViewModel makeReservationViewModel, Hotel hotel)
+        public MakeReservationCommand(MakeReservationViewModel makeReservationViewModel,
+            Hotel hotel,
+            NavigationService reservationViewNavigationService)
         {
             _hotel = hotel;
             _makeReservationViewModel = makeReservationViewModel;
 
             _makeReservationViewModel.PropertyChanged += OnViewModelPropertyChanged;
+
+            _reservationViewNavigationService = reservationViewNavigationService;
         }
 
         public override bool CanExecute(object? parameter)
@@ -42,16 +48,21 @@ namespace WPF_Reservation.Commands
             try
             {
                 _hotel.MakeReservation(reservation);
-                MessageBox.Show("Successfully reserved room.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Successfully reserved room.", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                _reservationViewNavigationService.Navigate();
             }
             catch (ReservationConflictException)
             {
-                MessageBox.Show("This room is already taken.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("This room is already taken.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MakeReservationViewModel.Username) || e.PropertyName == nameof(MakeReservationViewModel.FloorNumber))
+            if (e.PropertyName == nameof(MakeReservationViewModel.Username)
+                || e.PropertyName == nameof(MakeReservationViewModel.FloorNumber))
             {
                 OnCanExecutedChanged();
             }

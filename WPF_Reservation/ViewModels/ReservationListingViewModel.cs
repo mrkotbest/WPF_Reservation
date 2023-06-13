@@ -6,23 +6,41 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WPF_Reservation.Models;
+using WPF_Reservation.Commands;
+using WPF_Reservation.Stores;
+using WPF_Reservation.Services;
 
 namespace WPF_Reservation.ViewModels
 {
     public class ReservationListingViewModel : ViewModelBase
     {
+        private readonly Hotel _hotel;
         private readonly ObservableCollection<ReservationViewModel> _reservations;
+        private readonly NavigationStore navigationStore;
 
         public IEnumerable<ReservationViewModel> Reservations => _reservations;
+        
         public ICommand MakeReservationCommand { get; }
 
-        public ReservationListingViewModel()
+        public ReservationListingViewModel(Hotel hotel, NavigationService makeReservationNavigationService)
         {
+            _hotel = hotel;
             _reservations = new ObservableCollection<ReservationViewModel>();
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomId(1, 2), "SingletonSean", DateTime.Now, DateTime.Now.AddDays(1))));
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomId(3, 2), "Rayan Gosling", DateTime.Now.AddDays(3), DateTime.Now.AddDays(5))));
-            _reservations.Add(new ReservationViewModel(new Reservation(new RoomId(2, 4), "Pomella IdiNaxui", DateTime.Now.AddDays(2), DateTime.Now.AddDays(10))));
-            
+
+            MakeReservationCommand = new NavigationCommand(makeReservationNavigationService);
+
+            UpdateReservations();
+        }
+
+        private void UpdateReservations()
+        {
+            _reservations.Clear();
+
+            foreach (Reservation reservation in _hotel.GetAllReservations())
+            {
+                ReservationViewModel reservationViewModel = new ReservationViewModel(reservation);
+                _reservations.Add(reservationViewModel);
+            }
         }
     }
 }

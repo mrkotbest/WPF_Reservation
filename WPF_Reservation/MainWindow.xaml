@@ -5,14 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Reservation" 
         xmlns:views="clr-namespace:WPF_Reservation.Views"
+        xmlns:vms="clr-namespace:WPF_Reservation.ViewModels"
         mc:Ignorable="d"
         Title="Reservation"
         FontSize="14"
         Height="450"
         Width="800">
     <Grid Margin="20 10" MaxWidth="600">
-        <StackPanel Orientation="Horizontal">
-            <views:ReservationListingView DataContext="{Binding CurrentViewModel}"/>
-        </StackPanel>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type vms:MakeReservationViewModel}">
+                <views:MakeReservationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:ReservationListingViewModel}">
+                <views:ReservationListingView/>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <ContentControl Content="{Binding CurrentViewModel}"/>
+        
     </Grid>
 </Window>
