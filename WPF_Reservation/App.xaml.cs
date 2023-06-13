@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WPF_Reservation.DbContexts;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
 using WPF_Reservation.Services;
@@ -19,6 +21,7 @@ namespace WPF_Reservation
     /// </summary>
     public partial class App : Application
     {
+        private const string CONNECTION_STRING = "Data Source=reservoom.db";
         private readonly Hotel _hotel;
         private readonly NavigationStore _navigationStore;
 
@@ -50,7 +53,13 @@ namespace WPF_Reservation
             }
 
             IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
+            
+            DbContextOptions options = new DbContextOptionsBuilder().
+                UseSqlite(CONNECTION_STRING).Options;
+            ReservationRoomDbContext dbContext = new ReservationRoomDbContext(options);
 
+            dbContext.Database.Migrate();
+            
             _navigationStore.CurrentViewModel = CreateReservationListingViewModel();
 
             MainWindow mainWindow = new() { DataContext = new MainViewModel(_navigationStore) };
