@@ -56,9 +56,10 @@ namespace WPF_Reservation
             
             DbContextOptions options = new DbContextOptionsBuilder().
                 UseSqlite(CONNECTION_STRING).Options;
-            ReservationRoomDbContext dbContext = new ReservationRoomDbContext(options);
-
-            dbContext.Database.Migrate();
+            using (ReservationRoomDbContext dbContext = new ReservationRoomDbContext(options))
+            {
+                dbContext.Database.Migrate();
+            }
             
             _navigationStore.CurrentViewModel = CreateReservationListingViewModel();
 
