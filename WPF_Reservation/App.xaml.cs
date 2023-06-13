@@ -17,6 +17,13 @@ namespace WPF_Reservation
     /// </summary>
     public partial class App : Application
     {
+        private readonly Hotel _hotel;
+
+        public App()
+        {
+            _hotel = new Hotel("For Adults");
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             /*Hotel hotel = new Hotel("Only for adults");
@@ -40,14 +47,10 @@ namespace WPF_Reservation
 
             IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
 
-            MainWindow mainWindow = new MainWindow()
-            {
-                DataContext = new MainViewModel()
-            };
+            MainWindow mainWindow = new() { DataContext = new MainViewModel(_hotel) };
             mainWindow.Show();
 
             base.OnStartup(e);
         }
     }
 }
- 

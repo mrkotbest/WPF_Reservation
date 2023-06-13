@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WPF_Reservation.Commands;
+using WPF_Reservation.Models;
 
 namespace WPF_Reservation.ViewModels
 {
@@ -43,7 +45,7 @@ namespace WPF_Reservation.ViewModels
 			}
 		}
 
-		private DateTime _startDate;
+		private DateTime _startDate = new DateTime(2023, 6, 1);
 		public DateTime  StartDate
 		{
 			get => _startDate;
@@ -54,7 +56,7 @@ namespace WPF_Reservation.ViewModels
 			}
 		}
 
-        private DateTime _endDate;
+        private DateTime _endDate = new DateTime(2023, 6, 30);
         public DateTime EndDate
         {
             get => _endDate;
@@ -68,9 +70,10 @@ namespace WPF_Reservation.ViewModels
 		public ICommand SubmitCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public MakeReservationViewModel()
+        public MakeReservationViewModel(Hotel hotel)
         {
-            
+			SubmitCommand = new MakeReservationCommand(this, hotel);
+			CancelCommand = new CancelMakeReservationCommand();
         }
     }
 }

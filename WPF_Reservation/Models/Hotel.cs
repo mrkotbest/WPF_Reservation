@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WPF_Reservation.Models
 {
-    class Hotel
+    public class Hotel
     {
         private readonly ReservationBook _reservationBook;
 

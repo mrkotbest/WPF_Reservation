@@ -12,7 +12,7 @@
         Width="800">
     <Grid Margin="20 10" MaxWidth="600">
         <StackPanel Orientation="Horizontal">
-            <views:MakeReservationView DataContext="{Binding CurrentViewModel}"/>
+            <views:ReservationListingView DataContext="{Binding CurrentViewModel}"/>
         </StackPanel>
     </Grid>
 </Window>
