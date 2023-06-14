@@ -31,7 +31,7 @@ namespace WPF_Reservation
 
         public App()
         {
-            _reservationRoomDbContextFactory = new(CONNECTION_STRING);
+            _reservationRoomDbContextFactory = new ReservationRoomDbContextFactory(CONNECTION_STRING);
             IReservationProvider reservationProvider = new DatabaseReservationProvider(_reservationRoomDbContextFactory);
             IReservationCreator reservationCreator = new DatabaseReservationCreator(_reservationRoomDbContextFactory);
             IReservationConflictValidator reservationConflictValidator = new DatabaseReservationConflictValidator(_reservationRoomDbContextFactory);
@@ -43,28 +43,7 @@ namespace WPF_Reservation
         }
 
         protected override void OnStartup(StartupEventArgs e)
-        {
-            /*Hotel hotel = new Hotel("Only for adults");
-
-            try
-            {
-                hotel.MakeReservation(new Reservation(new RoomId(1, 2),
-                    "Gendalf Gray",
-                    new DateTime(2000, 1, 1),
-                    new DateTime(2000, 1, 2)));
-
-                hotel.MakeReservation(new Reservation(new RoomId(1, 3),
-                    "Gendalf Gray",
-                    new DateTime(2000, 1, 3),
-                    new DateTime(2000, 1, 4)));
-            }
-            catch (ReservationConflictException ex)
-            {
-                throw ex;
-            }
-
-            IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
-            
+        {            
             using (ReservationRoomDbContext dbContext = _reservationRoomDbContextFactory.CreateDbContext())
             {
                 dbContext.Database.Migrate();

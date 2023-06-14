@@ -35,7 +35,7 @@ namespace WPF_Reservation.Services.ReservationCreators
             {
                 FloorNumber = reservation.RoomId?.FloorNumber ?? 0,
                 RoomNumber = reservation.RoomId?.RoomNumber ?? 0,
-                Username = reservation.Username,
+                Username = reservation.Username ?? "no name",
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate
             };
