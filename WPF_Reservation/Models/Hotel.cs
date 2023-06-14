@@ -12,10 +12,10 @@ namespace WPF_Reservation.Models
 
         public string Name { get; }
 
-        public Hotel(string name)
+        public Hotel(string name, ReservationBook reservationBook)
         {
             Name = name;
-            _reservationBook = new ReservationBook();
+            _reservationBook = reservationBook;
         }
 
         /// <summary>
@@ -23,9 +23,9 @@ namespace WPF_Reservation.Models
         /// </summary>
         /// <param name="username">A username of the user.</param>
         /// <returns>All reservations in the reservation book.</returns>
-        public IEnumerable<Reservation> GetAllReservations()
+        public async Task<IEnumerable<Reservation>> GetAllReservations()
         {
-            return _reservationBook.GetAllReservations();
+            return await _reservationBook.GetAllReservations();
         }
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace WPF_Reservation.Models
         /// </summary>
         /// <param name="reservation">The incoming reservation.</param>
         /// <exception cref="ReservationConflictException"></exception>
-        public void MakeReservation(Reservation reservation)
+        public async Task MakeReservation(Reservation reservation)
         {
-            _reservationBook.AddReservation(reservation);
+            await _reservationBook.AddReservation(reservation);
         }
     }
 }

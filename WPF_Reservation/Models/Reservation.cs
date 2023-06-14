@@ -22,13 +22,5 @@ namespace WPF_Reservation.Models
             StartDate = startDate;
             EndDate = endDate;
         }
-
-        public bool Conflicts(Reservation reservation)
-        {
-            if (reservation.RoomId != RoomId)
-                return false;
-
-            return reservation.StartDate < EndDate && reservation.EndDate > StartDate; 
-        }
     }
 }

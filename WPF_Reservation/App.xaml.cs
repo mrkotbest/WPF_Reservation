@@ -10,6 +10,9 @@ using WPF_Reservation.DbContexts;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
 using WPF_Reservation.Services;
+using WPF_Reservation.Services.ReservationConflictValidators;
+using WPF_Reservation.Services.ReservationCreators;
+using WPF_Reservation.Services.ReservationProviders;
 using WPF_Reservation.Stores;
 using WPF_Reservation.ViewModels;
 using WPF_Reservation.Views;
@@ -24,10 +27,18 @@ namespace WPF_Reservation
         private const string CONNECTION_STRING = "Data Source=reservoom.db";
         private readonly Hotel _hotel;
         private readonly NavigationStore _navigationStore;
+        private readonly ReservationRoomDbContextFactory _reservationRoomDbContextFactory;
 
         public App()
         {
-            _hotel = new Hotel("For Adults");
+            _reservationRoomDbContextFactory = new(CONNECTION_STRING);
+            IReservationProvider reservationProvider = new DatabaseReservationProvider(_reservationRoomDbContextFactory);
+            IReservationCreator reservationCreator = new DatabaseReservationCreator(_reservationRoomDbContextFactory);
+            IReservationConflictValidator reservationConflictValidator = new DatabaseReservationConflictValidator(_reservationRoomDbContextFactory);
+
+            ReservationBook reservationBook = new ReservationBook(reservationProvider, reservationCreator, reservationConflictValidator);
+            
+            _hotel = new Hotel("For Adults", reservationBook);
             _navigationStore = new NavigationStore();
         }
 
@@ -54,9 +65,7 @@ namespace WPF_Reservation
 
             IEnumerable<Reservation> reservations = hotel.GetAllReservations();*/
             
-            DbContextOptions options = new DbContextOptionsBuilder().
-                UseSqlite(CONNECTION_STRING).Options;
-            using (ReservationRoomDbContext dbContext = new ReservationRoomDbContext(options))
+            using (ReservationRoomDbContext dbContext = _reservationRoomDbContextFactory.CreateDbContext())
             {
                 dbContext.Database.Migrate();
             }
@@ -75,7 +84,7 @@ namespace WPF_Reservation
 
         private ReservationListingViewModel CreateReservationListingViewModel()
         {
-            return new ReservationListingViewModel(_hotel, new NavigationService(_navigationStore, CreateMakeReservationViewModel));
+            return ReservationListingViewModel.LoadViewModel(_hotel, new NavigationService(_navigationStore, CreateMakeReservationViewModel));
         }
     }
 }

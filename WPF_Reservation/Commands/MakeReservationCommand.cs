@@ -12,7 +12,7 @@ using WPF_Reservation.ViewModels;
 
 namespace WPF_Reservation.Commands
 {
-    public class MakeReservationCommand : CommandBase
+    public class MakeReservationCommand : AsyncCommandBase
     {
         private readonly Hotel _hotel;
         private readonly MakeReservationViewModel _makeReservationViewModel;
@@ -37,7 +37,7 @@ namespace WPF_Reservation.Commands
                 base.CanExecute(parameter);
         }
 
-        public override void Execute(object? parameter)
+        public override async Task ExecuteAsync(object? parameter)
         {
             Reservation reservation = new Reservation(
                 new RoomId(_makeReservationViewModel.FloorNumber, _makeReservationViewModel.RoomNumber),
@@ -47,7 +47,7 @@ namespace WPF_Reservation.Commands
 
             try
             {
-                _hotel.MakeReservation(reservation);
+                await _hotel.MakeReservation(reservation);
                 MessageBox.Show("Successfully reserved room.", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -56,6 +56,11 @@ namespace WPF_Reservation.Commands
             catch (ReservationConflictException)
             {
                 MessageBox.Show("This room is already taken.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Failed to make reservation.", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
