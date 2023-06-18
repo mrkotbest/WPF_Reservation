@@ -8,21 +8,22 @@ using System.Windows;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Models;
 using WPF_Reservation.Services;
+using WPF_Reservation.Stores;
 using WPF_Reservation.ViewModels;
 
 namespace WPF_Reservation.Commands
 {
     public class MakeReservationCommand : AsyncCommandBase
     {
-        private readonly Hotel _hotel;
+        private readonly HotelStore _hotelStore;
         private readonly MakeReservationViewModel _makeReservationViewModel;
         private readonly NavigationService _reservationViewNavigationService;
 
         public MakeReservationCommand(MakeReservationViewModel makeReservationViewModel,
-            Hotel hotel,
+            HotelStore hotelStore,
             NavigationService reservationViewNavigationService)
         {
-            _hotel = hotel;
+            _hotelStore = hotelStore;
             _makeReservationViewModel = makeReservationViewModel;
 
             _makeReservationViewModel.PropertyChanged += OnViewModelPropertyChanged;
@@ -47,7 +48,8 @@ namespace WPF_Reservation.Commands
 
             try
             {
-                await _hotel.MakeReservation(reservation);
+                await _hotelStore.MakeReservation(reservation);
+
                 MessageBox.Show("Successfully reserved room.", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
