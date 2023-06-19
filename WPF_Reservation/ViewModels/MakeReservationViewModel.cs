@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ using WPF_Reservation.Stores;
 
 namespace WPF_Reservation.ViewModels
 {
-    public class MakeReservationViewModel : ViewModelBase
+    public class MakeReservationViewModel : ViewModelBase, INotifyDataErrorInfo
     {
 		private string _username;
 		public string Username
@@ -19,7 +21,7 @@ namespace WPF_Reservation.ViewModels
 			get => _username;
 			set
 			{
-				_username = value ?? "no name";
+				_username = value;
 				OnPropertyChanged(nameof(Username));
 			}
 		}
@@ -55,27 +57,75 @@ namespace WPF_Reservation.ViewModels
 			{
 				_startDate = value;
 				OnPropertyChanged(nameof(StartDate));
-			}
+
+                ClearErrors(nameof(StartDate));
+                ClearErrors(nameof(EndDate));
+
+                if (EndDate < StartDate)
+                {
+                    AddError("The START DATE cannot be after the END DATE.", nameof(StartDate));
+                }
+            }
 		}
 
         private DateTime _endDate = new DateTime(2023, 6, 30);
         public DateTime EndDate
         {
             get => _endDate;
-            set
+			set
             {
                 _endDate = value;
                 OnPropertyChanged(nameof(EndDate));
+
+                ClearErrors(nameof(StartDate));
+                ClearErrors(nameof(EndDate));
+
+                if (EndDate < StartDate)
+                {
+					AddError("The END DATE cannot be before the START DATE.", nameof(EndDate));
+                }
             }
         }
 
-		public ICommand SubmitCommand { get; }
+        public ICommand SubmitCommand { get; }
         public ICommand CancelCommand { get; }
+
+		private readonly Dictionary<string, List<string>> _propertyNameToErrors;
+        public bool HasErrors => _propertyNameToErrors.Any();
+		public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         public MakeReservationViewModel(HotelStore hotelStore, NavigationService reservationViewNavigationService)
         {
-			SubmitCommand = new MakeReservationCommand(this, hotelStore, reservationViewNavigationService);
-			CancelCommand = new NavigationCommand(reservationViewNavigationService);
+            SubmitCommand = new MakeReservationCommand(this, hotelStore, reservationViewNavigationService);
+            CancelCommand = new NavigationCommand(reservationViewNavigationService);
+            
+			_propertyNameToErrors = new Dictionary<string, List<string>>();
+        }
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+			return _propertyNameToErrors.GetValueOrDefault(propertyName, new List<string>());
+        }
+		private void AddError(string errorMessage, string propertyName)
+		{
+			if (!_propertyNameToErrors.ContainsKey(propertyName))
+			{
+				_propertyNameToErrors.Add(propertyName, new List<string>());
+			}
+
+			_propertyNameToErrors[propertyName].Add(errorMessage);
+            OnErrorsChanged(propertyName);
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            _propertyNameToErrors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
+        }
+
+		private void OnErrorsChanged(string propertyName)
+		{
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
     }
 }
