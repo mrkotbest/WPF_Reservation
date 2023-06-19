@@ -14,13 +14,27 @@ namespace WPF_Reservation.ViewModels
 {
     public class ReservationListingViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<ReservationViewModel> _reservations;
         private readonly HotelStore _hotelStore;
+        private readonly ObservableCollection<ReservationViewModel> _reservations;
 
         public IEnumerable<ReservationViewModel> Reservations => _reservations;
 
         public ICommand LoadReservationsCommand { get; }
         public ICommand MakeReservationCommand { get; }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get
+            {
+                return _isLoading;
+            }
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
 
         public ReservationListingViewModel(HotelStore hotelStore,
             NavigationService makeReservationNavigationService)

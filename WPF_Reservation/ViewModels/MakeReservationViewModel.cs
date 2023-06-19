@@ -13,13 +13,13 @@ namespace WPF_Reservation.ViewModels
 {
     public class MakeReservationViewModel : ViewModelBase
     {
-		private string? _username;
+		private string _username;
 		public string Username
 		{
 			get => _username;
 			set
 			{
-				_username = value;
+				_username = value ?? "no name";
 				OnPropertyChanged(nameof(Username));
 			}
 		}
