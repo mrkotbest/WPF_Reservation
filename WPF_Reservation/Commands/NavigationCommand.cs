@@ -10,11 +10,11 @@ using WPF_Reservation.Services;
 
 namespace WPF_Reservation.Commands
 {
-    public class NavigationCommand : CommandBase
+    public class NavigationCommand<TViewModel> : CommandBase where TViewModel : ViewModelBase
     {
-        private readonly NavigationService _navigationService;
+        private readonly NavigationService<TViewModel> _navigationService;
 
-        public NavigationCommand(NavigationService navigationService)
+        public NavigationCommand(NavigationService<TViewModel> navigationService)
         {
             _navigationService = navigationService;
         }

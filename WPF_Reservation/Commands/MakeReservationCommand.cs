@@ -17,11 +17,11 @@ namespace WPF_Reservation.Commands
     {
         private readonly HotelStore _hotelStore;
         private readonly MakeReservationViewModel _makeReservationViewModel;
-        private readonly NavigationService _reservationViewNavigationService;
+        private readonly NavigationService<ReservationListingViewModel> _reservationViewNavigationService;
 
         public MakeReservationCommand(MakeReservationViewModel makeReservationViewModel,
             HotelStore hotelStore,
-            NavigationService reservationViewNavigationService)
+            NavigationService<ReservationListingViewModel> reservationViewNavigationService)
         {
             _hotelStore = hotelStore;
             _makeReservationViewModel = makeReservationViewModel;
