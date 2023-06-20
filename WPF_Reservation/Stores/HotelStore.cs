@@ -26,7 +26,16 @@ namespace WPF_Reservation.Stores
 
         public async Task Load()
         {
-            await _initLazy.Value;
+            try
+            {
+                await _initLazy.Value;
+            }
+            catch (Exception)
+            {
+                _initLazy = new Lazy<Task>(Initialize);
+                throw;
+            }
+
         }
 
         public async Task MakeReservation(Reservation reservation)

@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace WPF_Reservation.Converters
 {
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class InverseBooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
