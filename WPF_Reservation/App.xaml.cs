@@ -1,5 +1,6 @@
 ﻿using LoadingSpinnerControl;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -27,16 +28,16 @@ namespace WPF_Reservation
     /// </summary>
     public partial class App : Application
     {
-        private const string CONNECTION_STRING = "Data Source=reservoom.db";
-
         private readonly IHost _host;
 
         public App()
         {
             _host = Host.CreateDefaultBuilder()
-                .ConfigureServices(services =>
+                .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton(new ReservationRoomDbContextFactory(CONNECTION_STRING));
+                    string connectionString = hostContext.Configuration.GetConnectionString("Default");
+
+                    services.AddSingleton(new ReservationRoomDbContextFactory(connectionString));
                     services.AddSingleton<IReservationProvider, DatabaseReservationProvider>();
                     services.AddSingleton<IReservationCreator, DatabaseReservationCreator>();
                     services.AddSingleton<IReservationConflictValidator, DatabaseReservationConflictValidator>();
