@@ -37,7 +37,8 @@ namespace WPF_Reservation
                 .AddViewModels()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    string connectionString = hostContext.Configuration.GetConnectionString("Default");
+                    string? connectionString = hostContext.Configuration.GetConnectionString("Default");
+                    string? hotelName = hostContext.Configuration.GetValue<string>("HotelName");
 
                     services.AddSingleton(new ReservationRoomDbContextFactory(connectionString));
                     services.AddSingleton<IReservationProvider, DatabaseReservationProvider>();
@@ -45,7 +46,7 @@ namespace WPF_Reservation
                     services.AddSingleton<IReservationConflictValidator, DatabaseReservationConflictValidator>();
 
                     services.AddTransient<ReservationBook>();
-                    services.AddSingleton((s) => new Hotel("For Adults", s.GetRequiredService<ReservationBook>()));
+                    services.AddSingleton((s) => new Hotel(hotelName, s.GetRequiredService<ReservationBook>()));
 
                     services.AddSingleton<HotelStore>();
                     services.AddSingleton<NavigationStore>();
