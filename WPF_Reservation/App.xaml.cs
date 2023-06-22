@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPF_Reservation.DbContexts;
 using WPF_Reservation.Exceptions;
+using WPF_Reservation.HostBuilder;
 using WPF_Reservation.Models;
 using WPF_Reservation.Services;
 using WPF_Reservation.Services.ReservationConflictValidators;
@@ -33,6 +34,7 @@ namespace WPF_Reservation
         public App()
         {
             _host = Host.CreateDefaultBuilder()
+                .AddViewModels()
                 .ConfigureServices((hostContext, services) =>
                 {
                     string connectionString = hostContext.Configuration.GetConnectionString("Default");
@@ -45,15 +47,6 @@ namespace WPF_Reservation
                     services.AddTransient<ReservationBook>();
                     services.AddSingleton((s) => new Hotel("For Adults", s.GetRequiredService<ReservationBook>()));
 
-                    services.AddTransient((s) => CreateReservationListingViewModel(s));
-                    services.AddSingleton<Func<ReservationListingViewModel>>((s) => () => s.GetRequiredService<ReservationListingViewModel>());
-                    services.AddSingleton<NavigationService<ReservationListingViewModel>>();
-
-                    services.AddTransient<MakeReservationViewModel>();   
-                    services.AddSingleton<Func<MakeReservationViewModel>>((s) => () => s.GetRequiredService<MakeReservationViewModel>());
-                    services.AddSingleton<NavigationService<MakeReservationViewModel>>();
-
-
                     services.AddSingleton<HotelStore>();
                     services.AddSingleton<NavigationStore>();
 
@@ -61,14 +54,6 @@ namespace WPF_Reservation
                     services.AddSingleton(s => new MainWindow() { DataContext = s.GetRequiredService<MainViewModel>() });
                 })
                 .Build();
-        }
-
-        private ReservationListingViewModel CreateReservationListingViewModel(IServiceProvider services)
-        {
-            return ReservationListingViewModel.LoadViewModel(
-                services.GetRequiredService<HotelStore>(),
-                services.GetRequiredService<NavigationService<MakeReservationViewModel>>()
-                );
         }
 
         protected override void OnStartup(StartupEventArgs e)
