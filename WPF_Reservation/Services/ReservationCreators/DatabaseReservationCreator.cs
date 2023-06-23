@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WPF_Reservation.DbContexts;
 using WPF_Reservation.DTOs;
 using WPF_Reservation.Models;
@@ -22,6 +18,8 @@ namespace WPF_Reservation.Services.ReservationCreators
         {
             using (ReservationRoomDbContext context = _dbContextFactory.CreateDbContext())
             {
+                await Task.Delay(2000);
+
                 ReservationDTO reservationDTO = ToReservationDTO(reservation);
 
                 context.Reservations.Add(reservationDTO);
@@ -35,7 +33,7 @@ namespace WPF_Reservation.Services.ReservationCreators
             {
                 FloorNumber = reservation.RoomId?.FloorNumber ?? 0,
                 RoomNumber = reservation.RoomId?.RoomNumber ?? 0,
-                Username = reservation.Username ?? "no name",
+                Username = reservation.Username,
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate
             };

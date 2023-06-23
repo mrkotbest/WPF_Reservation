@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPF_Reservation.Stores;
+﻿using WPF_Reservation.Services;
 using WPF_Reservation.ViewModels;
-using WPF_Reservation.Models;
-using WPF_Reservation.Services;
 
 namespace WPF_Reservation.Commands
 {

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WPF_Reservation.DbContexts;
 using WPF_Reservation.DTOs;
@@ -23,17 +21,20 @@ namespace WPF_Reservation.Services.ReservationProviders
         {
             using (ReservationRoomDbContext context = _dbContextFactory.CreateDbContext())
             {
-                IEnumerable<ReservationDTO> reservationDTOs = await context.Reservations.ToListAsync();
+                await Task.Delay(3000);
+                
+                IEnumerable<ReservationDTO> dto = await context.Reservations.ToListAsync();
 
-                await Task.Delay(2000);
-
-                return reservationDTOs.Select(ToReservation);
+                return dto.Select(r => ToReservation(r));
             }
         }
 
-        private static Reservation ToReservation(ReservationDTO r)
+        private static Reservation ToReservation(ReservationDTO dto)
         {
-            return new Reservation(new RoomId(r.FloorNumber, r.RoomNumber), r.Username, r.StartDate, r.EndDate);
+            return new Reservation(new RoomId(dto.FloorNumber, dto.RoomNumber),
+                dto.Username,
+                dto.StartDate,
+                dto.EndDate);
         }
     }
 }

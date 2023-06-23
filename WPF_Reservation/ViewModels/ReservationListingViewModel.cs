@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using WPF_Reservation.Models;
 using WPF_Reservation.Commands;
-using WPF_Reservation.Stores;
+using WPF_Reservation.Models;
 using WPF_Reservation.Services;
+using WPF_Reservation.Stores;
 
 namespace WPF_Reservation.ViewModels
 {
@@ -19,8 +16,21 @@ namespace WPF_Reservation.ViewModels
 
         public IEnumerable<ReservationViewModel> Reservations => _reservations;
 
+        public bool HasReservations => _reservations.Any();
+
         public ICommand LoadReservationsCommand { get; }
         public ICommand MakeReservationCommand { get; }
+
+        private bool _hasDataLoaded;
+        public bool HasDataLoaded
+        {
+            get => _hasDataLoaded;
+            set
+            {
+                _hasDataLoaded = value;
+                OnPropertyChanged(nameof(HasDataLoaded));
+            }
+        }
 
         private string _errorMessage;
         public string ErrorMessage
@@ -32,6 +42,7 @@ namespace WPF_Reservation.ViewModels
             set
             {
                 _errorMessage = value;
+                
                 OnPropertyChanged(nameof(ErrorMessage));
 
                 OnPropertyChanged(nameof(HasErrorMessage));
@@ -65,6 +76,12 @@ namespace WPF_Reservation.ViewModels
             MakeReservationCommand = new NavigationCommand<MakeReservationViewModel>(makeReservationNavigationService);
 
             _hotelStore.ReservationMade += OnReservationMode;
+            _hotelStore.ReservationMade += OnReservationChanged;
+        }
+
+        private void OnReservationChanged(Reservation reservation)
+        {
+            OnPropertyChanged(nameof(HasReservations));
         }
 
         private void OnReservationMode(Reservation reservation)

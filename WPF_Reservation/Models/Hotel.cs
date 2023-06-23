@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WPF_Reservation.Models
@@ -19,10 +16,9 @@ namespace WPF_Reservation.Models
         }
 
         /// <summary>
-        /// Get the reservations for a user.
+        /// Get all reservations.
         /// </summary>
-        /// <param name="username">A username of the user.</param>
-        /// <returns>All reservations in the reservation book.</returns>
+        /// <returns>All reservations in the reservation book of the hotel.</returns>
         public async Task<IEnumerable<Reservation>> GetAllReservations()
         {
             return await _reservationBook.GetAllReservations();
@@ -32,7 +28,8 @@ namespace WPF_Reservation.Models
         /// Make a reservation.
         /// </summary>
         /// <param name="reservation">The incoming reservation.</param>
-        /// <exception cref="ReservationConflictException"></exception>
+        /// <exception cref="InvalidReservationTimeRangeException">Throw if reservation start date is after end date.</exception>
+        /// <exception cref="ReservationConflictException">Throw if incoming reservation conflicts eith existing reservation.</exception>
         public async Task MakeReservation(Reservation reservation)
         {
             await _reservationBook.AddReservation(reservation);

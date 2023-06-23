@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:WPF_Reservation.Views"
-    xmlns:cnv="clr-namespace:WPF_Reservation.Converters" xmlns:custom="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
+    xmlns:cnv="clr-namespace:WPF_Reservation.Converters"
+    xmlns:custom="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
     mc:Ignorable="d" 
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -15,9 +15,8 @@
         <cnv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid MaxWidth="600">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -30,20 +29,32 @@
 
             <TextBlock
                 Grid.Column="0"
-                Text="View Reservations"
-                Style="{StaticResource Header}"/>
+                Style="{StaticResource Header}"
+                Text="View Reservations"/>
 
             <Button
-                Command="{Binding MakeReservationCommand}"
-                Content="Make Reservation"
                 Grid.Column="1"
-                Margin="10 0 0 0"/>
+                Margin="10 0 0 0"
+                Command="{Binding MakeReservationCommand}"
+                Content="Make Reservation">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasDataLoaded}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="0 25 0 0">
+        <Grid
+            Grid.Row="1"
+            Margin="0 25 0 0">
 
             <custom:LoadingSpinner
-                Color="DarkGray"
+                Color="Black"
                 Diameter="70"
                 IsLoading="{Binding IsLoading}"
                 Thickness="5"/>
@@ -55,52 +66,59 @@
                     Text="{Binding ErrorMessage}"
                     Visibility="{Binding HasErrorMessage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                <ListView
-                    ItemsSource="{Binding Reservations}"
-                    Visibility="{Binding HasErrorMessage, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                    
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
+                <Grid Visibility="{Binding HasErrorMessage, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Room ID">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock HorizontalAlignment="Center" Text="{Binding RoomId}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
+                    <TextBlock
+                        Text="No reservations have been made."
+                        Visibility="{Binding HasReservations, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
 
-                            <GridViewColumn Header="Username">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Padding="0 0 20 0" Text="{Binding Username}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
+                    <ListView
+                        ItemsSource="{Binding Reservations}"
+                        Visibility="{Binding HasReservations, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                            <GridViewColumn Header="Start Date">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Padding="0 0 20 0" Text="{Binding StartDate, StringFormat='dd.MM'}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                            <GridViewColumn Header="End Date">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Padding="0 0 20 0" Text="{Binding EndDate, StringFormat='dd.MM'}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Room ID">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding RoomId}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Username">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Padding="0 0 20 0" Text="{Binding Username}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Start Date">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Padding="0 0 20 0" Text="{Binding StartDate, StringFormat='dd.MM'}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="End Date">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Padding="0 0 20 0" Text="{Binding EndDate, StringFormat='dd.MM'}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

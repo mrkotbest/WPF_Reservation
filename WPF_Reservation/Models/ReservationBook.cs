@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using WPF_Reservation.Exceptions;
 using WPF_Reservation.Services.ReservationConflictValidators;
@@ -30,6 +27,11 @@ namespace WPF_Reservation.Models
 
         public async Task AddReservation(Reservation reservation)
         {
+            if (reservation.StartDate > reservation.EndDate)
+            {
+                throw new InvalidReservationTimeRangeException(reservation);
+            }
+
             Reservation conflictingReservation = await _reservationConflictValidator.GetConflictingReservation(reservation);
 
             if (conflictingReservation != null)

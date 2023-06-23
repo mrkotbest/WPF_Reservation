@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPF_Reservation.Models;
-using WPF_Reservation.Stores;
+﻿using WPF_Reservation.Stores;
 
 namespace WPF_Reservation.ViewModels
 {

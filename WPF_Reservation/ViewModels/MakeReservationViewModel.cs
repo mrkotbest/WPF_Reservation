@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using WPF_Reservation.Commands;
-using WPF_Reservation.Models;
 using WPF_Reservation.Services;
 using WPF_Reservation.Stores;
 
@@ -23,10 +20,19 @@ namespace WPF_Reservation.ViewModels
 			{
 				_username = value;
 				OnPropertyChanged(nameof(Username));
+
+				ClearErrors(nameof(Username));
+
+				if (!HasUsername)
+				{
+					AddError("Username cannot be empty.", nameof(Username));
+				}
+
+				OnPropertyChanged(nameof(CanCreateReservation));
 			}
 		}
 
-		private int _floorNumber;
+		private int _floorNumber = 1;
 		public int FloorNumber
 		{
 			get => _floorNumber;
@@ -34,7 +40,16 @@ namespace WPF_Reservation.ViewModels
 			{
 				_floorNumber = value;
 				OnPropertyChanged(nameof(FloorNumber));
-			}
+
+				ClearErrors(nameof(FloorNumber));
+
+				if (!HasFloorNumberGreaterThanZero)
+				{
+					AddError("Floor number must be greater than zero.", nameof(FloorNumber));
+				}
+
+                OnPropertyChanged(nameof(CanCreateReservation));
+            }
 		}
 
 		private int _roomNumber;
@@ -61,10 +76,12 @@ namespace WPF_Reservation.ViewModels
                 ClearErrors(nameof(StartDate));
                 ClearErrors(nameof(EndDate));
 
-                if (EndDate < StartDate)
+                if (!HasStartDateBeforeEndDate)
                 {
-                    AddError("The START DATE cannot be after the END DATE.", nameof(StartDate));
+                    AddError("The start date cannot be after the end date.", nameof(StartDate));
                 }
+
+				OnPropertyChanged(nameof(CanCreateReservation));
             }
 		}
 
@@ -80,10 +97,12 @@ namespace WPF_Reservation.ViewModels
                 ClearErrors(nameof(StartDate));
                 ClearErrors(nameof(EndDate));
 
-                if (EndDate < StartDate)
+                if (!HasStartDateBeforeEndDate)
                 {
-					AddError("The END DATE cannot be before the START DATE.", nameof(EndDate));
+					AddError("The end date cannot be before the start date.", nameof(EndDate));
                 }
+
+                OnPropertyChanged(nameof(CanCreateReservation));
             }
         }
 
@@ -94,7 +113,41 @@ namespace WPF_Reservation.ViewModels
         public bool HasErrors => _propertyNameToErrors.Any();
 		public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
-        public MakeReservationViewModel(HotelStore hotelStore, NavigationService<ReservationListingViewModel> reservationViewNavigationService)
+		public bool CanCreateReservation =>
+			HasUsername &&
+			HasFloorNumberGreaterThanZero &&
+			HasStartDateBeforeEndDate &&
+			!HasErrors;
+
+		private bool HasUsername => !string.IsNullOrEmpty(Username);
+		private bool HasFloorNumberGreaterThanZero => FloorNumber > 0;
+		private bool HasStartDateBeforeEndDate => StartDate < EndDate;
+		private bool HasSubmitErrorMessage => !string.IsNullOrEmpty(SubmitErrorMessage);
+
+		private string _submitErrorMessage;
+		public string SubmitErrorMessage
+		{
+			get => _submitErrorMessage;
+			set
+			{
+				_submitErrorMessage = value;
+				OnPropertyChanged(nameof(SubmitErrorMessage));
+				OnPropertyChanged(nameof(HasSubmitErrorMessage));
+			}
+		}
+
+		private bool _isSubmitting;
+		public bool IsSubmitting
+		{
+			get => _isSubmitting;
+			set
+			{
+				_isSubmitting = value;
+				OnPropertyChanged(nameof(IsSubmitting));
+			}
+		}
+
+		public MakeReservationViewModel(HotelStore hotelStore, NavigationService<ReservationListingViewModel> reservationViewNavigationService)
         {
             SubmitCommand = new MakeReservationCommand(this, hotelStore, reservationViewNavigationService);
             CancelCommand = new NavigationCommand<ReservationListingViewModel>(reservationViewNavigationService);
@@ -106,6 +159,7 @@ namespace WPF_Reservation.ViewModels
         {
 			return _propertyNameToErrors.GetValueOrDefault(propertyName, new List<string>());
         }
+
 		private void AddError(string errorMessage, string propertyName)
 		{
 			if (!_propertyNameToErrors.ContainsKey(propertyName))
@@ -114,13 +168,15 @@ namespace WPF_Reservation.ViewModels
 			}
 
 			_propertyNameToErrors[propertyName].Add(errorMessage);
-            OnErrorsChanged(propertyName);
+            
+			OnErrorsChanged(propertyName);
         }
 
         private void ClearErrors(string propertyName)
         {
             _propertyNameToErrors.Remove(propertyName);
-            OnErrorsChanged(propertyName);
+            
+			OnErrorsChanged(propertyName);
         }
 
 		private void OnErrorsChanged(string propertyName)
