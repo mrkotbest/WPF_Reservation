@@ -59,7 +59,7 @@ namespace WPF_Reservation.Commands
             }
             catch (InvalidReservationTimeRangeException)
             {
-                _makeReservationViewModel.SubmitErrorMessage = "Start date must be before end date.";
+                _makeReservationViewModel.SubmitErrorMessage = "Start date must be before End date.";
             }
             catch (Exception)
             {

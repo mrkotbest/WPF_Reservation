@@ -41,8 +41,9 @@
                 Text="Name"/>
             <TextBox
                 Grid.Row="1"
+                Margin="0 5 0 0"
                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                Margin="0 5 0 0"/>
+                Visibility="{Binding HasUsernameLength, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
 
         <Grid

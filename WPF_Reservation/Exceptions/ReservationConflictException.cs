@@ -14,21 +14,5 @@ namespace WPF_Reservation.Exceptions
             ExistingReservation = existingReservation;
             IncomingReservation = incomingReservation;
         }
-
-        public ReservationConflictException()
-        {
-        }
-
-        public ReservationConflictException(string? message) : base(message)
-        {
-        }
-
-        public ReservationConflictException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ReservationConflictException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

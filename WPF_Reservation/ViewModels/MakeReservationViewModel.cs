@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using WPF_Reservation.Commands;
 using WPF_Reservation.Services;
@@ -28,7 +29,17 @@ namespace WPF_Reservation.ViewModels
 					AddError("Username cannot be empty.", nameof(Username));
 				}
 
-				OnPropertyChanged(nameof(CanCreateReservation));
+                if (!HasUsernameMax)
+                {
+                    AddError("Username cannot be longer than 15 letters.", nameof(Username));
+
+                    if (_propertyNameToErrors.TryGetValue(nameof(Username), out List<string> errorMessage))
+                    {
+                        MessageBox.Show(errorMessage.FirstOrDefault(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
+                OnPropertyChanged(nameof(CanCreateReservation));
 			}
 		}
 
@@ -61,6 +72,15 @@ namespace WPF_Reservation.ViewModels
 			{
 				_roomNumber = value;
 				OnPropertyChanged(nameof(RoomNumber));
+
+				ClearErrors(nameof(RoomNumber));
+
+				if (!HasRoomNumberGreaterThanZero)
+				{
+					AddError("Room number must be greater than zero.", nameof(RoomNumber));
+				}
+
+				OnPropertyChanged(nameof(CanCreateReservation));
 			}
 		}
 
@@ -120,6 +140,8 @@ namespace WPF_Reservation.ViewModels
 			!HasErrors;
 
 		private bool HasUsername => !string.IsNullOrEmpty(Username);
+		private bool HasUsernameMax => Username.Length <= 15;
+		private bool HasRoomNumberGreaterThanZero => RoomNumber > 0;
 		private bool HasFloorNumberGreaterThanZero => FloorNumber > 0;
 		private bool HasStartDateBeforeEndDate => StartDate < EndDate;
 		private bool HasSubmitErrorMessage => !string.IsNullOrEmpty(SubmitErrorMessage);
